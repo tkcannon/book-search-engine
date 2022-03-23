@@ -29,7 +29,7 @@ const LoginForm = () => {
     }
 
     try {
-      const { response } = await login({
+      const response = await login({
         variables: { ...userFormData },
       });
 
