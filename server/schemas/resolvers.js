@@ -7,6 +7,7 @@ const resolvers = {
   Query: {
     //me
     me: async (parent, args, context) => {
+      console.log('called query me: ', args, context);
       if (context.user) {
         const userData = await User.findOne({ _id: context.user._id })
           .select('-__v -password');
@@ -14,12 +15,29 @@ const resolvers = {
         return userData;
       }
       throw new AuthenticationError('Not logged in')
-    }
+    },
+    u: async () => {
+      const users = await User.find()
+        .select('-__v');
+      if (users) {
+        console.log(users);
+        return users;
+      }
+      throw new console.error('Failed to find Users');
+    },
   },
   Mutations: {
-    login: async (parent, { email, password }) => {
-      const user = await User.findOne({ email });
+    //addUser
+    addUser: async (parent, args) => {
+      console.log('called adduser: ', args);
+      const user = await User.create({ args });
 
+      const token = signToken(user);
+      return { token, user };
+    },
+    login: async (parent, { email, password }) => {
+      const user = await User.findOne({ email: email });
+      console.log('Called Login', user);
       if (!user) {
         throw new AuthenticationError('Incorrect Login Info');
       }
@@ -32,8 +50,7 @@ const resolvers = {
 
       const token = signToken(user);
       return { token, user };
-    }
-    //addUser
+    },
     //saveBook
     //removeBook
     // },
