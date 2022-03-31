@@ -7,7 +7,7 @@ import Auth from '../utils/auth';
 
 const LoginForm = () => {
   const [userFormData, setUserFormData] = useState({ email: '', password: '' });
-  const [login, { error }] = useMutation(LOGIN_USER);
+  const [login] = useMutation(LOGIN_USER);
 
   // const [validated] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
@@ -32,10 +32,10 @@ const LoginForm = () => {
       const { data } = await login({
         variables: { ...userFormData },
       });
-
       Auth.login(data.login.token);
     } catch (e) {
       console.error(e);
+      setShowAlert(true);
     }
 
     setUserFormData({
@@ -83,7 +83,6 @@ const LoginForm = () => {
           Submit
         </Button>
       </Form>
-      {error && <div>Login Failed</div>}
     </>
   );
 };

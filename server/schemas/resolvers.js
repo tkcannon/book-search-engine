@@ -19,7 +19,6 @@ const resolvers = {
   Mutation: {
     //addUser
     addUser: async (parent, { username, email, password }) => {
-      console.log('adduser');
       const user = await User.create({ username, email, password });
 
       const token = signToken(user);
@@ -27,7 +26,6 @@ const resolvers = {
     },
 
     login: async (parent, { email, password }) => {
-      console.log('login')
       const user = await User.findOne({ email });
       if (!user) {
         throw new AuthenticationError('Incorrect Login Info');
@@ -43,7 +41,6 @@ const resolvers = {
       return { token, user };
     },
     saveBook: async (parent, args, context) => {
-      console.log('savebook called');
       if (context.user) {
         const updatedUser = await User.findOneAndUpdate(
           { _id: context.user._id },
@@ -56,6 +53,7 @@ const resolvers = {
       throw new AuthenticationError('You need to be logged in!');
     },
     removeBook: async (parent, { bookId }, context) => {
+      console.log('remove book: ' + bookId);
       if (context.user) {
         const updatedUser = await User.findOneAndUpdate(
           { _id: context.user._id },
